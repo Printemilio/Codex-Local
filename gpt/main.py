@@ -19,18 +19,20 @@ def main():
     print("Instructions reçues de l'API OpenAI.")
 
     for instruction in instructions.split('\n'):
-        if instruction.startswith('$ask'):
-        
+        # Exécuter directement sans demande de confirmation pour toutes les instructions sauf celles qui commencent par $ask
+        if not instruction.startswith('$ask'):
+            print("Continuer avec l'opération...")
+            ProjectInteractor.process_instructions(instruction)
+        else:
+            # Pour les instructions $ask, demander une confirmation
             message = instruction.split('"')[1] if '"' in instruction else instruction
             response = input(f"{message} (oui/non) : ")
-            if response.lower() != 'oui':
+            if response.lower() == 'oui':
+                print("Continuer avec l'opération...")
+                ProjectInteractor.process_instructions(instruction)
+            else:
                 print("Opération annulée par l'utilisateur.")
                 break
-        else:
-            print("Continuer avec l'opération...")
-            # Ici, tu peux traiter les autres instructions normalement
-            # Par exemple, utiliser ProjectInteractor pour exécuter l'instruction
-            ProjectInteractor.process_instructions(instruction)
 
 if __name__ == "__main__":
     main()
